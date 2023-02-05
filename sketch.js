@@ -5,19 +5,26 @@ let bin_gearset;
 function setup(){
   cnvs = SVG().addTo('body').size(windowWidth, windowHeight);
   //createCanvas(windowWidth, windowHeight);
-  ctr = createVector(windowWidth/2, windowHeight/2);
+  ctr = createVector(200, windowHeight/2);
+  
   
   //set mode to degrees
   angleMode(DEGREES);
   //noLoop(); 
   frameRate(10);
-  bin_gearset = new gearset(2, 6);
+  bin_gearset = new gearset(2, 5);
+  bin_gearset.draw_svg();
+  //draw tickmarks eveyr 100 px
+  for(var i = 0; i < windowWidth; i+=100){
+    cnvs.line(i, 0, i, 10).stroke({width: 1, color: '#000'});
+  }
 
 
 }
 
 function draw(){
-  bin_gearset.draw_svg();
+  bin_gearset.rotate_svg();
+  
  
   
 
