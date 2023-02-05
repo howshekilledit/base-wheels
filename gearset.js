@@ -26,7 +26,7 @@ class gearset {
         this.gears = [];
         for(var i = 0; i < n_digits; i++){
             let n = base**i;
-            this.gears.push(new gear(n, createVector(ctr.x + 280, ctr.y + 13), max_r/(i+1), 1.4));
+            this.gears.push(new gear(n, createVector(ctr.x, ctr.y), max_r/(n_digits-i), 1.4));
 
         }
     }
