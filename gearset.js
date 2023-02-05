@@ -25,7 +25,14 @@ class gearset {
         this.n_digits = n_digits;
         this.gears = [];
         for(var i = 0; i < n_digits; i++){
-            this.gears.push(new gear(base, i));
+            let n = base**i;
+            this.gears.push(new gear(n, createVector(ctr.x + 280, ctr.y + 13), max_r/(i+1), 1.4));
+
+        }
+    }
+    draw_svg(){
+        for(var i = 0; i < this.n_digits; i++){
+            this.gears[i].draw_svg();
         }
     }
     addGear(gear) {
@@ -35,8 +42,9 @@ class gearset {
         return this.gear;
     }
 }
-
-function pt_on_round(r, f, ctr){
+//function that generates coordinates along a circle
+//arguments: radius, angle, center
+function pt_on_round(r, f, ctr){ 
     var x = r * cos(f) + ctr.x;
     var y = r * sin(f) + ctr.y;
     return createVector(x, y);

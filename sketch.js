@@ -19,7 +19,7 @@ function setup(){
   // gear = cnvs.polyline(gearpts).fill('none').stroke({width: 1, color: '#000'});
   tgear = new gear(32, ctr, 200, 1.2);
   tgear.draw_svg();
-  sgear = new gear(16, createVector(ctr.x + 50, ctr.y + 50), 100, 1.2);
+  sgear = new gear(16, createVector(ctr.x +280, ctr.y+13), 100, 1.4);
   sgear.draw_svg();
 
 
@@ -32,7 +32,7 @@ function draw(){
   strokeWeight(1);
 
   tgear.svg_gear.rotate(1);
-  sgear.svg_gear.rotate(2);
+  sgear.svg_gear.rotate(-2);
 
 }
 
