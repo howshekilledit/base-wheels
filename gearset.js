@@ -9,10 +9,10 @@ class gear{
         for(var i = 0; i < n; i++){
             this.pts.push(pt_on_round(r, i*this.angle, ctr)); //outer points
             this.pts.push(pt_on_round(r/m, i*this.angle + this.angle/2, ctr)); //inner points
-            this.pts.push(this.pts[0]); //close the polygon
         }
+        this.pts.push(this.pts[0]); //close the polygon
+
     }
-   
     draw_svg(){
         var gearpts = this.pts.map(pt => [pt.x, pt.y]);
         this.svg_gear = cnvs.polyline(gearpts).fill('none').stroke({width: 1, color: '#000'});
@@ -20,7 +20,7 @@ class gear{
 }
 
 class gearset {
-    constructor(base, n_digits) {
+    constructor(base, n_digits, max_r = 200) {
         this.base = base;
         this.n_digits = n_digits;
         this.gears = [];
