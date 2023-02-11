@@ -17,7 +17,7 @@ class gear {
 
     }
     draw_svg() {
-        this.rotation = 0;
+        this.rotation = 0; 
         var gearpts = this.pts.map(pt => [pt.x, pt.y]);
         this.svg_gear = cnvs.polyline(gearpts).fill('none').stroke({ width: 1, color: '#000' });
         //this.svg_gear.rotate(270);
@@ -27,20 +27,20 @@ class gear {
         this.svg_gear = cnvs.group().add(this.svg_gear);
         this.lbls = []; //array of labels
         let exp = log(floor(this.pts.length / 2)) / log(n) - 1; //get exponent of gear
-
+       
         for (let [i, pt] of this.pts.entries()) {
             if (i % 2 == 0 && i < this.pts.length - 1) {
                 let index = floor(i / 2);
                 //change direction of numbering based on wheel direction
-                let lbl_txt;
+                let lbl_txt; 
                 if (this.rotate_amt < 0) {
                     lbl_txt = floor(index / (n ** exp));
                 } else {
-                    lbl_txt = floor((n ** exp - index / (n ** exp)) % n);
+                    lbl_txt = floor((n ** exp - index / (n ** exp))%n);
                 }
-
+               
                 let coord = pt_on_round(this.r - this.th, index * this.angle, this.ctr);
-                let lbl = cnvs.text(lbl_txt).move(coord.x - font_size / 3, coord.y - font_size / 2).font({ size: font_size, family: 'Monospace', anchor: 'left', leading: '0em' });
+                let lbl = cnvs.text(lbl_txt).move(coord.x - font_size / 3, coord.y - font_size / 2).font({ size: font_size, family: 'Monospace', anchor: 'left', leading: '0em'});
                 lbl.rotate(index * this.angle + 90);
                 this.lbls.push(lbl);
                 //let ccl = cnvs.circle(6).move(coord.x-3, coord.y-3);
@@ -53,50 +53,36 @@ class gear {
         this.svg_gear.rotate(angle);
         if (update) {
             this.rotation = (this.rotation + angle) % 360;
+        }
+        //if(this.rotation % this.angle == 0){
             this.shift_colored_lbl();
-        }
+        //}
     }
-    shift_colored_lbl() { //shift the colored label to the current tooth
-        function clr_lbl(lbl, w_ctr, diam) {
-            //get x y coordinates of label at current rotation
-            let lbl_coords = pt_on_round(lbl.parent().r - lbl.parent().th, lbl.parent().rotation, lbl.parent().ctr);
-            
-
-            //console.log(lbl_coords);
-            if (dist(lbl_coords.x, lbl_coords.y, w_ctr.x, w_ctr.y) < diam/ 2) {
-                //console.log(lbl.cx(), lbl.cy(), w_ctr.x, w_ctr.y, diam/ 2)
-                lbl.font({ fill: '#f00' });
-                return true; 
-            } else {
-                lbl.font({ fill: '#000' })
-                return false; 
-            }
+    shift_colored_lbl(){ //shift the colored label to the current tooth
+        this.lbls.map(lbl => lbl.font({fill:'#000'}));
+        let index = floor((this.rotation + this.angle/4) / this.angle);
+        if (index < 0){
+            index = abs(index)%this.n;
+        } else {
+            index = (this.n - index)%this.n;
         }
-        let focused_lbl = this.lbls.filter(lbl => clr_lbl(lbl, this.window_ctr, this.wd))[0]; //color the focused label
-        // try{
-        //     
-        //     this.focused_lbl = focused_lbl.text();
-        //     focused_lbl.font({ fill: '#f00' })
-        // } catch(err) {
-        //     console.log(err);
-        // }
-        //this.focused_lbl = focused_lbl.text();
-        //focused_lbl.font({ fill: '#f00' });
-
+        let lbl = this.lbls[index];
+        lbl.font({fill:'#f00'});
+        this.focused_lbl = lbl.text();    
     }
-    draw_focus_window() { //draw circle around apex tooh of gear
-        this.window_ctr = pt_on_round(this.r - this.th, this.rotation - 90, this.ctr);
-        let window_diam = min(this.th * 2, 10 * this.r / this.n);
-        this.wd = window_diam;
+    draw_focus_window(){ //draw circle around apex tooh of gear
+        let window_ctr = pt_on_round(this.r - this.th, this.rotation - 90, this.ctr);
+        this.window_ctr = window_ctr;
+        let window_diam = min(this.th*2, 10*this.r/this.n);
         this.svg_window = cnvs.circle(window_diam).move(
-            this.window_ctr.x - window_diam / 2, this.window_ctr.y - window_diam / 2).fill('none').stroke({ width: 1, color: '#f00' });
+            window_ctr.x-window_diam/2, window_ctr.y-window_diam/2).fill('none').stroke({width:1, color:'#f00'});
         //this.svg_gear.add(window);
 
     }
 }
 
 
-class gearset {
+class gearset { 
     constructor(base, n_digits, max_r = 150,
         th = 20, offset = createVector(th, th), first = createVector(1000, 300)) {
         this.base = base;
@@ -150,21 +136,21 @@ class gearset {
     getGear() {
         return this.gear;
     }
-    delete_svg() {
-        for (let g of this.gears) {
+    delete_svg(){
+        for (let g of this.gears){
             g.svg_gear.remove();
             g.svg_window.remove();
         }
     }
-    draw_focus_windows() {
-        for (let g of this.gears) {
+    draw_focus_windows(){
+        for (let g of this.gears){
             g.draw_focus_window();
         }
     }
-    get_output() {
+    get_output(){
         let output = '';
-        for (let g of this.gears) {
-            output = g.focused_lbl + output;
+        for (let g of this.gears){
+            output  = g.focused_lbl + output ;
         }
         return output;
     }
