@@ -1,7 +1,10 @@
 
 let cnvs;
 let ctr;
+let ten_gearset; 
 let bin_gearset; 
+let set; 
+let output_text; 
 function setup(){
   cnvs = SVG().addTo('body').size(windowWidth, windowHeight);
   //createCanvas(windowWidth, windowHeight);
@@ -12,18 +15,31 @@ function setup(){
   angleMode(DEGREES);
   //noLoop(); 
   frameRate(10);
-  bin_gearset = new gearset(2, 5);
-  bin_gearset.draw_svg();
-  //draw tickmarks eveyr 100 px
-  for(var i = 0; i < windowWidth; i+=100){
-    cnvs.line(i, 0, i, 10).stroke({width: 1, color: '#000'});
-  }
+  ten_gearset = new gearset(10,2, 300, 40, createVector(0, 5));
+
+ 
+  bin_gearset = new gearset(2, 5, 250, 20, createVector(-10, 20), createVector(windowWidth - 50, windowHeight/2));
+  set = draw_set(bin_gearset);
+  //create buttons to toggle between gearsets
+  let btn = createButton('Toggle Gearset');
+  btn.position(10, 10);
+  btn.mousePressed(function(){
+    if(set == bin_gearset){
+      set = draw_set(ten_gearset, bin_gearset);
+    } else {
+      set = draw_set(bin_gearset, ten_gearset);
+    }
+  }); 
+  output_text = cnvs.text(' ').move(10, 50).font({size: 20, family: 'Helvetica'});
 
 
 }
 
 function draw(){
-  bin_gearset.rotate_svg();
+  set.rotate_svg();
+  let output = set.get_output();
+  output_text.text(output);
+  
   
  
   
@@ -31,31 +47,14 @@ function draw(){
 }
 
 
-
-//function that generates coordinates along a circle
-function round_polygon(x, y, r, n){
-  var pts = [];
-  var angle = 360/n;
-  for(var i = 0; i < n; i++){
-    var pt = spin(r, i*angle);
-    pts.push(pt);
-  }
-  pts.push(pts[0]);
-  return pts;
-}
-
-//function that generates coordiantes along a gear
-//arguments: center x, center y, radius, number of teeth, ratio of inner radius to outer radius
-function gear_polygon(x, y, r, n, m){
-  var pts = [];
-  var angle = 360/n;
-  for(var i = 0; i < n; i++){
-    var pt = spin(r, i*angle);
-    pts.push(pt);
-    var pt = spin(r/m, i*angle + angle/2);
-    pts.push(pt);
-  }
-  pts.push(pts[0]);
-  return pts;
+function draw_set(set, other_set = false){
+  if(other_set){
+    other_set.delete_svg();
+  } 
+  set.draw_svg();
+  set.label_svg();
+  set.rotate_svg(270, false);
+  set.draw_focus_windows(); 
+  return set; 
 }
 
