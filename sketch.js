@@ -15,7 +15,7 @@ function setup(){
   angleMode(DEGREES);
   //noLoop(); 
   frameRate(10);
-  ten_gearset = new gearset(10,2, 300, 40, createVector(0, 5));
+  ten_gearset = new gearset(10,3, 600, 40, createVector(0, 5));
 
  
   bin_gearset = new gearset(2, 5, 250, 20, createVector(-10, 20), createVector(windowWidth - 50, windowHeight/2));
@@ -31,7 +31,9 @@ function setup(){
     }
   }); 
   output_text = cnvs.text(' ').move(10, 50).font({size: 20, family: 'Helvetica'});
-
+  for(g of set.gears){
+    g.shift_colored_lbl();
+  }
 
 }
 

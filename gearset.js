@@ -8,7 +8,10 @@ class gear {
         this.th = th; //thickness of gear 
         this.m = r / (r - th); //ratio of inner radius to outer radius
         this.pts = []; //array of points
-        this.rotate_amt = this.angle / 10; //amount to rotate gear on each frame
+        this.t = 0; //highlighted tooth
+        this.f = 0; //rotating frames elapsed
+        this.fr = 10; //rotating frames per tooth
+        this.rotate_amt = this.angle / this.fr; //amount to rotate gear on each frame
         for (var i = 0; i < n; i++) {
             this.pts.push(pt_on_round(r, i * this.angle, ctr)); //outer points
             this.pts.push(pt_on_round(r / this.m, i * this.angle + this.angle / 2, ctr)); //inner points
@@ -53,22 +56,48 @@ class gear {
         this.svg_gear.rotate(angle);
         if (update) {
             this.rotation = (this.rotation + angle) % 360;
+            this.t = (this.n-floor(this.rotation/this.angle))%this.n;
+            // if(this.t < 0){
+            //     this.t = (this.n - this.t)%this.n;
+            // } else {
+            //     this.t = (this.t)%this.n;
+            // }
+            this.f++; //increment frame counter
+            if(this.f%this.fr == 0){ //if a whole tooth has been rotated
+                if (this.rotate_amt < 0) {
+                    this.t-=1;
+                } else {
+                    this.t+=1; 
+                }
+                if(this.t < 0){
+                    this.t = (this.n - this.t)%this.n;
+                } else {
+                    this.t = (this.t)%this.n;
+                }
+        
+                //this.t = this.t%this.n;
+                this.shift_colored_lbl();
+            }
+
         }
+      
         //if(this.rotation % this.angle == 0){
-            this.shift_colored_lbl();
+            
         //}
     }
     shift_colored_lbl(){ //shift the colored label to the current tooth
         this.lbls.map(lbl => lbl.font({fill:'#000'}));
-        let index = floor((this.rotation + this.angle/4) / this.angle);
-        if (index < 0){
-            index = abs(index)%this.n;
-        } else {
-            index = (this.n - index)%this.n;
-        }
-        let lbl = this.lbls[index];
-        lbl.font({fill:'#f00'});
-        this.focused_lbl = lbl.text();    
+        this.lbls[this.t].font(({fill:'#f00'}));
+        this.focused_lbl = this.lbls[this.t].text();
+        // let index = floor((this.rotation + this.angle/4) / this.angle);
+        // if (index < 0){
+        //     index = abs(index)%this.n;
+        // } else {
+        //     index = (this.n - index)%this.n;
+        // }
+        // let lbl = this.lbls[index];
+        // lbl.font({fill:'#f00'});
+        // this.focused_lbl = lbl.text();    
     }
     draw_focus_window(){ //draw circle around apex tooh of gear
         let window_ctr = pt_on_round(this.r - this.th, this.rotation - 90, this.ctr);
