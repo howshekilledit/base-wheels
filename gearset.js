@@ -13,8 +13,12 @@ class gear {
         this.fr = 10; //rotating frames per tooth
         this.rotate_amt = this.angle / this.fr; //amount to rotate gear on each frame
         for (var i = 0; i < n; i++) {
+            //outer gear points
             this.pts.push(pt_on_round(r, i * this.angle, ctr)); //outer points
             this.pts.push(pt_on_round(r / this.m, i * this.angle + this.angle / 2, ctr)); //inner points
+            //inner gear points
+            this.pts.push(pt_on_round(r - th, i * this.angle, ctr)); //outer points
+            this.pts.push(pt_on_round(r / this.m - th, i * this.angle + this.angle / 2, ctr)); //inner points
         }
         this.pts.push(this.pts[0]); //close the polygon
 
@@ -41,7 +45,6 @@ class gear {
                 } else {
                     lbl_txt = floor((n ** exp - index / (n ** exp))%n);
                 }
-               
                 let coord = pt_on_round(this.r - this.th, index * this.angle, this.ctr);
                 let lbl = cnvs.text(lbl_txt).move(coord.x - font_size / 3, coord.y - font_size / 2).font({ size: font_size, family: 'Monospace', anchor: 'left', leading: '0em'});
                 lbl.rotate(index * this.angle + 90);
