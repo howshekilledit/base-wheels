@@ -11,7 +11,7 @@ class gear {
         this.t = 0; //highlighted tooth
         this.f = 0; //rotating frames elapsed
         this.fr = 10; //rotating frames per tooth
-        this.rotate_amt = this.angle / this.fr; //amount to rotate gear on each frame
+        this.rotate_amt = this.angle/this.fr; //amount to rotate gear on each frame
         //outer gear points
         for (var i = 0; i < n; i++) {
             //outer gear points
@@ -20,7 +20,7 @@ class gear {
         }
         this.pts.push(this.pts[0]); //close the polygon
         this.inner_pts = []; //array of inner points
-        let inner_radius = 0.9 * r / this.m;
+        let inner_radius = r -th*1.5;
         for (var i = 0; i < n; i++) {
             this.inner_pts.push(pt_on_round(inner_radius, i * this.angle , ctr));
             this.inner_pts.push(pt_on_round(inner_radius / this.m, i * this.angle + this.angle / 2, ctr)); //inner points
@@ -30,11 +30,13 @@ class gear {
     }
     draw_svg() {
         this.rotation = 0; 
+        //generate random color
+        this.color = color(random(255), random(255), random(255));
         var gearpts = this.pts.map(pt => [pt.x, pt.y]);
         var innerpts = this.inner_pts.map(pt => [pt.x, pt.y]);
         this.svg_gear = cnvs.group();
-        this.svg_gear.add(cnvs.polyline(gearpts).fill('none').stroke({ width: 1, color: '#000' }));
-        this.svg_gear.add(cnvs.polyline(innerpts).fill('none').stroke({ width: 1, color: '#000' }));
+        this.svg_gear.add(cnvs.polyline(gearpts).fill('none').stroke({ width: 1, color: this.color }));
+        this.svg_gear.add(cnvs.polyline(innerpts).fill('none').stroke({ width: 1, color: this.color }));
         //this.svg_gear.rotate(270);
     }
     label_svg(n, font_size = 20) { //label the gear teeth
@@ -55,7 +57,7 @@ class gear {
                 }
                 let coord = pt_on_round(this.r - this.th, index * this.angle, this.ctr);
                 let lbl = cnvs.text(lbl_txt).move(coord.x - font_size / 3, coord.y - font_size / 2).font({ size: font_size, family: 'Monospace', anchor: 'left', leading: '0em'});
-                lbl.rotate(index * this.angle + 90);
+                lbl.rotate(index * this.angle + 180);
                 this.lbls.push(lbl);
                 //let ccl = cnvs.circle(6).move(coord.x-3, coord.y-3);
                 this.svg_gear.add(lbl);
@@ -111,7 +113,7 @@ class gear {
         // this.focused_lbl = lbl.text();    
     }
     draw_focus_window(){ //draw circle around apex tooh of gear
-        let window_ctr = pt_on_round(this.r - this.th, this.rotation - 90, this.ctr);
+        let window_ctr = pt_on_round(this.r - this.th, this.rotation, this.ctr);
         this.window_ctr = window_ctr;
         let window_diam = min(this.th*2, 10*this.r/this.n);
         this.svg_window = cnvs.circle(window_diam).move(
@@ -132,21 +134,29 @@ class gearset {
         let x = first.x; //x coordinate of first gear
         let y = first.y; //y coordinate of first gear
         let r = max_r; 
-        for (var i = 1; i <= n_digits; i++) {
+        for (var i = n_digits; i >= 1; i--) {
             let n = base ** i;
+            if(i < n_digits){
+                r/= base/2;
+                r-=th; 
+                x+=r+2*th;
+        
+            }
 
-            r = r * 0.9; //reduce radius of gear
+          
             //x -= r + offset.x;
             this.gears.push(new gear(n, createVector(x, y), r, th));
-            if (i % 2) {
-                this.gears[i - 1].rotate_amt *= -1;
-            }
-            //x -= r - 1;
+            x-=r;
+       
             // if (i % 2) {
-            //     y += offset.y;
-            // } else {
-            //     y -= offset.y;
+            //     this.gears[i - 1].rotate_amt *= -1;
             // }
+            //x -= r - 1;
+            if (i % 2) {
+                y += offset.y;
+            } else {
+                y -= offset.y;
+            }
         }
     }
     draw_svg() {
