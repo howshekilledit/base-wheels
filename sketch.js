@@ -18,7 +18,7 @@ function setup(){
   ten_gearset = new gearset(10,3, 600, 40, createVector(0, 5));
 
  
-  bin_gearset = new gearset(2, 5, 250, 20, createVector(-10, 20), createVector(windowWidth - 50, windowHeight/2));
+  bin_gearset = new gearset(2, 5, 250, 20, createVector(-10, 20), createVector(300, windowHeight/2));
   set = draw_set(bin_gearset);
   //create buttons to toggle between gearsets
   let btn = createButton('Toggle Gearset');
@@ -55,8 +55,8 @@ function draw_set(set, other_set = false){
   } 
   set.draw_svg();
   set.label_svg();
-  set.rotate_svg(270, false);
-  set.draw_focus_windows(); 
+ // set.rotate_svg(270, false);
+  //set.draw_focus_windows(); 
   return set; 
 }
 

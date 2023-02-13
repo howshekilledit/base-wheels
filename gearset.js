@@ -22,7 +22,7 @@ class gear {
         this.inner_pts = []; //array of inner points
         let inner_radius = 0.9 * r / this.m;
         for (var i = 0; i < n; i++) {
-            this.inner_pts.push(pt_on_round(inner_radius, i * this.angle + this.angle / 2, ctr));
+            this.inner_pts.push(pt_on_round(inner_radius, i * this.angle , ctr));
             this.inner_pts.push(pt_on_round(inner_radius / this.m, i * this.angle + this.angle / 2, ctr)); //inner points
         }
         this.inner_pts.push(this.inner_pts[0]); //close the polygon
@@ -129,24 +129,24 @@ class gearset {
         this.n_digits = n_digits;
         this.gears = [];
         this.th = th; //thickness of gears
-        let r = max_r / (n_digits);
         let x = first.x; //x coordinate of first gear
         let y = first.y; //y coordinate of first gear
+        let r = max_r; 
         for (var i = 1; i <= n_digits; i++) {
             let n = base ** i;
 
-            r = max_r / (n_digits - i + 1);
-            x -= r + offset.x;
+            r = r * 0.9; //reduce radius of gear
+            //x -= r + offset.x;
             this.gears.push(new gear(n, createVector(x, y), r, th));
             if (i % 2) {
                 this.gears[i - 1].rotate_amt *= -1;
             }
-            x -= r - 1;
-            if (i % 2) {
-                y += offset.y;
-            } else {
-                y -= offset.y;
-            }
+            //x -= r - 1;
+            // if (i % 2) {
+            //     y += offset.y;
+            // } else {
+            //     y -= offset.y;
+            // }
         }
     }
     draw_svg() {
