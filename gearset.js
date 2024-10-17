@@ -35,8 +35,8 @@ class gear {
         var gearpts = this.pts.map(pt => [pt.x, pt.y]);
         var innerpts = this.inner_pts.map(pt => [pt.x, pt.y]);
         this.svg_gear = cnvs.group();
-        this.svg_gear.add(cnvs.polyline(gearpts).fill('none').stroke({ width: 1, color: this.color }));
-        this.svg_gear.add(cnvs.polyline(innerpts).fill('none').stroke({ width: 1, color: this.color }));
+        this.svg_gear.add(cnvs.polyline(gearpts).fill(this.color).stroke({ width: 1, color:'#ffffff'}));
+        this.svg_gear.add(cnvs.polyline(innerpts).fill(this.color).stroke({ width: 1, color: '#ffffff'}));
         //this.svg_gear.rotate(270);
     }
     label_svg(n, font_size = 20) { //label the gear teeth
