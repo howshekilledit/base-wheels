@@ -1,5 +1,14 @@
+let odd_gear_color = '#ff0000';
+let even_gear_color = '#0000ff';
+let highlight_color = '#00ff00';
+let stroke_color = '#ffffff';
+let gear_color = '#000000';
+let font_color = '#ffffff';
+let stroke_width = 2;
+let f_size = 18;
+
 class gear {
-    constructor(n, ctr, r, th = 10) {
+    constructor(n, ctr, r, th = 10, color = gear_color) {
         this.n = n; //number of teeth
         this.angle = 360 / n; //angle between teeth
         this.rotation = 0; //rotation of gear
@@ -12,6 +21,7 @@ class gear {
         this.f = 0; //rotating frames elapsed
         this.fr = 10; //rotating frames per tooth
         this.rotate_amt = this.angle / this.fr; //amount to rotate gear on each frame
+	this.color = color; //color of gear
         //outer gear points
         for (var i = 0; i < n; i++) {
             //outer gear points
@@ -28,18 +38,20 @@ class gear {
         this.inner_pts.push(this.inner_pts[0]); //close the polygon
 
     }
-    draw_svg(clr = '#000000') {
+    draw_svg(clr = this.color) {
         this.rotation = 0;
         //generate random color
         this.color = clr;
         var gearpts = this.pts.map(pt => [pt.x, pt.y]);
         var innerpts = this.inner_pts.map(pt => [pt.x, pt.y]);
         this.svg_gear = cnvs.group();
-        this.svg_gear.add(cnvs.polyline(gearpts).fill(this.color).stroke({ width: 2, color:'#ffffff'}));
-        this.svg_gear.add(cnvs.polyline(innerpts).fill(this.color).stroke({ width: 2, color: '#ffffff'}));
+	//outer gear
+        this.svg_gear.add(cnvs.polyline(gearpts).fill(this.color));
+	//inner gear
+        this.svg_gear.add(cnvs.polyline(innerpts).fill(stroke_color));
         //this.svg_gear.rotate(270);
     }
-    label_svg(n, font_size = 20) { //label the gear teeth
+    label_svg(n, font_size = f_size) { //label the gear teeth
         //parameters: n = base of gearset, font_size = size of font
         this.svg_gear = cnvs.group().add(this.svg_gear);
         this.lbls = []; //array of labels
@@ -84,8 +96,8 @@ class gear {
 
 
     shift_colored_lbl() { //shift the colored label to the current tooth
-        this.lbls.map(lbl => lbl.font({ fill: '#fff' }));
-        this.lbls[this.t].font(({ fill: '#f00' }));
+        this.lbls.map(lbl => lbl.font({ fill: font_color }));
+        this.lbls[this.t].font(({ fill: highlight_color}));
         this.focused_lbl = this.lbls[this.t].text();
         // let index = floor((this.rotation + this.angle/4) / this.angle);
         // if (index < 0){
@@ -102,7 +114,7 @@ class gear {
         this.window_ctr = window_ctr;
         let window_diam = min(this.th * 2, 10 * this.r / this.n);
         this.svg_window = cnvs.circle(window_diam).move(
-            window_ctr.x - window_diam / 2, window_ctr.y - window_diam / 2).fill('none').stroke({ width: 2, color: '#f00' });
+            window_ctr.x - window_diam / 2, window_ctr.y - window_diam / 2).fill('none').stroke({ width: 2, color: highlight_color });
         //this.svg_gear.add(window);
 
     }
@@ -126,8 +138,13 @@ class gearset {
                 r -= th;
                 x += r + 2 * th;
             }
-
-
+		let gcolor;
+	    if(i % 2){
+		    gcolor = odd_gear_color;
+		}
+		else{
+			gcolor = even_gear_color;
+		}
             //x -= r + offset.x;
             let next_gear = new gear(n, createVector(x, y), r, th);
             x -= r;
