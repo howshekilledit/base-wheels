@@ -34,6 +34,11 @@ function setup(){
   for(g of set.gears){
     g.shift_colored_lbl();
   }
+// if mobile, rotate sideways and fill screen
+	if (windowWidth < windowHeight) {
+		rotate(90);
+		cnvs.size(windowHeight, windowWidth);
+	}
 
 }
 

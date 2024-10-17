@@ -35,8 +35,8 @@ class gear {
         var gearpts = this.pts.map(pt => [pt.x, pt.y]);
         var innerpts = this.inner_pts.map(pt => [pt.x, pt.y]);
         this.svg_gear = cnvs.group();
-        this.svg_gear.add(cnvs.polyline(gearpts).fill(this.color).stroke({ width: 1, color:'#ffffff'}));
-        this.svg_gear.add(cnvs.polyline(innerpts).fill(this.color).stroke({ width: 1, color: '#ffffff'}));
+        this.svg_gear.add(cnvs.polyline(gearpts).fill(this.color).stroke({ width: 2, color:'#ffffff'}));
+        this.svg_gear.add(cnvs.polyline(innerpts).fill(this.color).stroke({ width: 2, color: '#ffffff'}));
         //this.svg_gear.rotate(270);
     }
     label_svg(n, font_size = 20) { //label the gear teeth
@@ -84,7 +84,7 @@ class gear {
 
 
     shift_colored_lbl() { //shift the colored label to the current tooth
-        this.lbls.map(lbl => lbl.font({ fill: '#000' }));
+        this.lbls.map(lbl => lbl.font({ fill: '#fff' }));
         this.lbls[this.t].font(({ fill: '#f00' }));
         this.focused_lbl = this.lbls[this.t].text();
         // let index = floor((this.rotation + this.angle/4) / this.angle);
@@ -102,7 +102,7 @@ class gear {
         this.window_ctr = window_ctr;
         let window_diam = min(this.th * 2, 10 * this.r / this.n);
         this.svg_window = cnvs.circle(window_diam).move(
-            window_ctr.x - window_diam / 2, window_ctr.y - window_diam / 2).fill('none').stroke({ width: 1, color: '#f00' });
+            window_ctr.x - window_diam / 2, window_ctr.y - window_diam / 2).fill('none').stroke({ width: 2, color: '#f00' });
         //this.svg_gear.add(window);
 
     }
