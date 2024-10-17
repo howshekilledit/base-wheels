@@ -18,6 +18,7 @@ function setup(){
   ten_gearset = new gearset(10,2, 600, 40, createVector(15, 0), createVector(windowWidth - 300, windowHeight/2));
 
  
+document.querySelector('canvas').style.display = 'none';
   bin_gearset = new gearset(2, 3, 250, 20, createVector(-10, 20), createVector(300, windowHeight/2));
   set = draw_set(ten_gearset);
   //create buttons to toggle between gearsets
